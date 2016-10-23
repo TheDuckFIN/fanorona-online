@@ -3,6 +3,14 @@ body {
   padding-top: 100px;
 }
 
-#username_form {
+#username_selection {
+    display: none;
+}
+
+#game {
+    display: none;
+}
+
+#lobby {
     display: none;
 }

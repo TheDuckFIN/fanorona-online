@@ -1,14 +1,24 @@
 var socket = io();
+var ui = new UI(800, 500);
+
+var username_selection = $('#username_selection');
+var game_panel = $('#game');
+
 
 socket.on('set username', function() {
-  $('#username_form').show();
+    username_selection.show();
+    game_panel.hide();
 });
 
 $("#setUsername").submit(function( event ) {
-  var name = $('#username').val();
-  socket.emit('set username', name);
+    var name = $('#username').val();
+    socket.emit('set username', name);
 
-  $('#username_form').hide();
-  
-  event.preventDefault();
+    username_selection.hide();
+
+    ui.init();
+
+    game_panel.show();
+
+    event.preventDefault();
 });
