@@ -1,5 +1,5 @@
 var socket = io();
-var ui = new UI(800, 500);
+var ui = new UI(800, 445);
 
 var username_selection = $('#username_selection');
 var game_panel = $('#game');
