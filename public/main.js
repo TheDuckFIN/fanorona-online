@@ -1,9 +1,8 @@
 var socket = io();
-var ui = new UI(800, 445);
+var game = new Game(800, 445);
 
 var username_selection = $('#username_selection');
 var game_panel = $('#game');
-
 
 socket.on('set username', function() {
     username_selection.show();
@@ -16,7 +15,7 @@ $("#setUsername").submit(function( event ) {
 
     username_selection.hide();
 
-    ui.init();
+    game.start();
 
     game_panel.show();
 

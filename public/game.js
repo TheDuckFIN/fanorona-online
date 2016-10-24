@@ -1,4 +1,4 @@
-function UI(width, height) {
+function Game(width, height) {
     this.width = width;
     this.height = height;
     this.ctx = document.getElementById("gameCanvas").getContext("2d");
@@ -13,19 +13,39 @@ function UI(width, height) {
     this.blackPieceColor = "#483C32";
     this.whitePieceColor = "#E3DAC9";
     this.pieceRadius = Math.round(this.pieceDistance / 4);
+
+    //piece array. 0 = empty, 1 = black, 2 = white
+    this.pieces = [
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [2, 1, 2, 1, 0, 2, 1, 2, 1],
+        [2, 2, 2, 2, 2, 2, 2, 2, 2],
+        [2, 2, 2, 2, 2, 2, 2, 2, 2]
+    ];
 }
 
-UI.prototype.init = function() {
+Game.prototype.start = function() {
+    this.interval = setInterval(this.update.bind(this), 20);
+    this.update();
+}
+
+Game.prototype.update = function() {
+    this.clear();
     this.drawBoard();
 
     for(var x = 0; x < 9; x++) {
         for(var y = 0; y < 5; y++) {
-            this.drawPiece(x, y, (x+y)%2 == 0);
+            if (this.pieces[y][x] == 0) continue;
+            this.drawPiece(x, y, this.pieces[y][x] == 1);
         }
     }
 }
 
-UI.prototype.drawBoard = function() {
+Game.prototype.clear = function() {
+    this.ctx.clearRect(0, 0, this.width, this.height);
+}
+
+Game.prototype.drawBoard = function() {
     //draw the brown underboard
     this.ctx.fillStyle = "#E6BF83";
     this.ctx.fillRect(0, 0, this.width, this.height);
@@ -44,10 +64,12 @@ UI.prototype.drawBoard = function() {
     //draw diagonal lines
     for(var x = 0; x < 4; x++) {
         for(var y = 0; y < 2; y++) {
+            this.ctx.beginPath();
             this.ctx.moveTo(this.border + this.pieceDistance * 2 * x, this.border + this.pieceDistance * 2 * y);
             this.ctx.lineTo(this.border + this.pieceDistance * 2 * (x+1), this.border + this.pieceDistance * 2 * (y+1));
             this.ctx.stroke();
 
+            this.ctx.beginPath();
             this.ctx.moveTo(this.border + this.pieceDistance * 2 * (x+1), this.border + this.pieceDistance * 2 * y);
             this.ctx.lineTo(this.border + this.pieceDistance * 2 * x, this.border + this.pieceDistance * 2 * (y+1));
             this.ctx.stroke();
@@ -55,7 +77,7 @@ UI.prototype.drawBoard = function() {
     }
 }
 
-UI.prototype.drawPiece = function(x, y, isBlack) {
+Game.prototype.drawPiece = function(x, y, isBlack) {
     var pieceColor = isBlack ? this.blackPieceColor : this.whitePieceColor;
 
     this.ctx.beginPath();
@@ -71,6 +93,4 @@ UI.prototype.drawPiece = function(x, y, isBlack) {
     this.ctx.strokeStyle = "#000000";
     this.ctx.lineWidth = 2;
     this.ctx.stroke();
-
-    this.ctx.closePath();
 }
