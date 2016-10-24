@@ -1,35 +1,52 @@
-function Game(width, height) {
-    this.width = width;
-    this.height = height;
-    this.ctx = document.getElementById("gameCanvas").getContext("2d");
+var Game = {
+    canvas: document.getElementById("gameCanvas"),
 
     //border on the sides of the board
-    this.border = 40;
+    border: 40,
 
     //the distance x or y between two pieces
-    this.pieceDistance = Math.round(Math.min((this.width - this.border * 2)/8, (this.height - this.border * 2) / 4));
+    pieceDistance: 80,
 
     //piece settings
-    this.blackPieceColor = "#483C32";
-    this.whitePieceColor = "#E3DAC9";
-    this.pieceRadius = Math.round(this.pieceDistance / 4);
+    blackPieceColor: "#483C32",
+    whitePieceColor: "#E3DAC9",
+    pieceRadius: 25,
 
     //piece array. 0 = empty, 1 = black, 2 = white
-    this.pieces = [
+    pieces: [
         [1, 1, 1, 1, 1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1, 1, 1, 1, 1],
         [2, 1, 2, 1, 0, 2, 1, 2, 1],
         [2, 2, 2, 2, 2, 2, 2, 2, 2],
         [2, 2, 2, 2, 2, 2, 2, 2, 2]
-    ];
+    ]
 }
 
-Game.prototype.start = function() {
+Game.start = function() {
+    this.canvas.width = this.border * 2 + 8 * this.pieceDistance;
+    this.canvas.height = this.border * 2 + 4 * this.pieceDistance;
+
+    this.ctx = this.canvas.getContext("2d");
+
     this.interval = setInterval(this.update.bind(this), 20);
+
+    window.addEventListener('mouseup', function (e) {
+        /*
+         * Code snippet from http://stackoverflow.com/a/18053642
+         */
+        var rect = Game.canvas.getBoundingClientRect();
+        var x = Math.round(e.clientX - rect.left);
+        var y = Math.round(e.clientY - rect.top);
+
+        if (x >= 0 && y >= 0 && x <= Game.canvas.width && y <= Game.canvas.height) {
+            Game.mouseClicked(x, y);
+        }
+    });
+
     this.update();
 }
 
-Game.prototype.update = function() {
+Game.update = function() {
     this.clear();
     this.drawBoard();
 
@@ -41,14 +58,36 @@ Game.prototype.update = function() {
     }
 }
 
-Game.prototype.clear = function() {
-    this.ctx.clearRect(0, 0, this.width, this.height);
+Game.clear = function() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 }
 
-Game.prototype.drawBoard = function() {
+Game.mouseClicked = function(x, y) {
+    var pieceX = Math.round((x - this.border) / this.pieceDistance);
+    var pieceY = Math.round((y - this.border) / this.pieceDistance);
+    
+    var pieceCoordsX = this.border + pieceX * this.pieceDistance;
+    var pieceCoordsY = this.border + pieceY * this.pieceDistance;
+
+    //how many pixels it's okay to miss
+    var missClickMargin = 5;
+
+    var leftBorder = pieceCoordsX - this.pieceRadius - missClickMargin;
+    var topBorder = pieceCoordsY - this.pieceRadius - missClickMargin;
+    var rightBorder = pieceCoordsX + this.pieceRadius + missClickMargin;
+    var bottomBorder = pieceCoordsY + this.pieceRadius + missClickMargin;
+
+    console.log("X: " + pieceX + ", Y: " + pieceY);
+
+    if (x > leftBorder && y > topBorder && x < rightBorder && y < bottomBorder) {
+        this.pieces[pieceY][pieceX] = 0;
+    }
+}
+
+Game.drawBoard = function() {
     //draw the brown underboard
     this.ctx.fillStyle = "#E6BF83";
-    this.ctx.fillRect(0, 0, this.width, this.height);
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     //set the width and color of the lines we will draw in the board
     this.ctx.lineWidth = 3;
@@ -77,7 +116,7 @@ Game.prototype.drawBoard = function() {
     }
 }
 
-Game.prototype.drawPiece = function(x, y, isBlack) {
+Game.drawPiece = function(x, y, isBlack) {
     var pieceColor = isBlack ? this.blackPieceColor : this.whitePieceColor;
 
     this.ctx.beginPath();

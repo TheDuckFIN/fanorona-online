@@ -1,5 +1,4 @@
 var socket = io();
-var game = new Game(800, 445);
 
 var username_selection = $('#username_selection');
 var game_panel = $('#game');
@@ -15,7 +14,7 @@ $("#setUsername").submit(function( event ) {
 
     username_selection.hide();
 
-    game.start();
+    Game.start();
 
     game_panel.show();
 
