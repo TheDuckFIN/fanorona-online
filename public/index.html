@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <div id="username_selection">
+    <div id="usernameSelection">
       <h1>Welcome!</h1>
       <form id="setUsername" action="#">
         <input type="text" id="username">
@@ -14,13 +14,25 @@
     </div>
 
     <div id="lobby">
-      <h1></h1>
+      <h1>Fanorona</h1>
+      
+      Hello <span>undefined</span>! <br /><br />
+
+      <button id="newGame">New game</button> <br /><br />
+
+      or join an existing game with an id:<br /><br />
+
+      <form id="joinGame" action="#">
+        <input type="text" id="gameid">
+        <input type="submit" value="Submit">
+      </form>
+
     </div>
 
     <div id="game">
-      <h1>Player 1</h1>
+      <h1></h1>
       <canvas id="gameCanvas" width="800" height="445"></canvas>
-      <h1>Player 2</h1>
+      <h1></h1>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>

@@ -1,4 +1,4 @@
-var Game = {
+var game = {
     canvas: document.getElementById("gameCanvas"),
 
     //border on the sides of the board
@@ -13,40 +13,45 @@ var Game = {
     pieceRadius: 25,
 
     //piece array. 0 = empty, 1 = black, 2 = white
-    pieces: [
-        [1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [2, 1, 2, 1, 0, 2, 1, 2, 1],
-        [2, 2, 2, 2, 2, 2, 2, 2, 2],
-        [2, 2, 2, 2, 2, 2, 2, 2, 2]
-    ]
+    pieces: undefined,
+
+    //localPlayer 1 = black, 2 = white
+    localPlayer: 0
+
+    /*[1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [2, 1, 2, 1, 0, 2, 1, 2, 1],
+    [2, 2, 2, 2, 2, 2, 2, 2, 2],
+    [2, 2, 2, 2, 2, 2, 2, 2, 2]*/
 }
 
-Game.start = function() {
+game.init = function() {
     this.canvas.width = this.border * 2 + 8 * this.pieceDistance;
     this.canvas.height = this.border * 2 + 4 * this.pieceDistance;
 
     this.ctx = this.canvas.getContext("2d");
 
+    this.update();
+}
+
+game.start = function() {
     this.interval = setInterval(this.update.bind(this), 20);
 
     window.addEventListener('mouseup', function (e) {
         /*
          * Code snippet from http://stackoverflow.com/a/18053642
          */
-        var rect = Game.canvas.getBoundingClientRect();
+        var rect = game.canvas.getBoundingClientRect();
         var x = Math.round(e.clientX - rect.left);
         var y = Math.round(e.clientY - rect.top);
 
-        if (x >= 0 && y >= 0 && x <= Game.canvas.width && y <= Game.canvas.height) {
-            Game.mouseClicked(x, y);
+        if (x >= 0 && y >= 0 && x <= game.canvas.width && y <= game.canvas.height) {
+            game.mouseClicked(x, y);
         }
     });
-
-    this.update();
 }
 
-Game.update = function() {
+game.update = function() {
     this.clear();
     this.drawBoard();
 
@@ -58,11 +63,11 @@ Game.update = function() {
     }
 }
 
-Game.clear = function() {
+game.clear = function() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 }
 
-Game.mouseClicked = function(x, y) {
+game.mouseClicked = function(x, y) {
     var pieceX = Math.round((x - this.border) / this.pieceDistance);
     var pieceY = Math.round((y - this.border) / this.pieceDistance);
     
@@ -84,7 +89,7 @@ Game.mouseClicked = function(x, y) {
     }
 }
 
-Game.drawBoard = function() {
+game.drawBoard = function() {
     //draw the brown underboard
     this.ctx.fillStyle = "#E6BF83";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -116,7 +121,7 @@ Game.drawBoard = function() {
     }
 }
 
-Game.drawPiece = function(x, y, isBlack) {
+game.drawPiece = function(x, y, isBlack) {
     var pieceColor = isBlack ? this.blackPieceColor : this.whitePieceColor;
 
     this.ctx.beginPath();
